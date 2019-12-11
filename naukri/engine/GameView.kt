@@ -97,13 +97,13 @@ class GameView(
                 ScreenEvent.setEvent(event)
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        Collision.onTouchDown()
+                        Collider.getOnTouchDownEvents()
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        Collision.onTouchMove()
+                        Collider.getOnTouchMoveEvents()
                     }
                     MotionEvent.ACTION_UP -> {
-                        Collision.onTouchUp()
+                        Collider.getOnTouchUpEvents()
                     }
                 }
                 return@setOnTouchListener true

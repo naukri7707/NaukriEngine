@@ -55,11 +55,21 @@ data class Vector2(
         return Vector2() - this
     }
 
-    override fun toString(): String {
-        return "($x, $y)"
-    }
-
     fun toVector2Int(): Vector2Int {
         return Vector2Int(x.toInt(), y.toInt())
+    }
+
+    internal fun renderToWorldPosition(): Vector2 {
+        return Vector2(
+            x - GameView.viewCenter.x + Camera.position.x,
+            GameView.viewCenter.y - y + Camera.position.y
+        )
+    }
+
+    internal fun worldToRenderPosition(): Vector2 {
+        return Vector2(
+            GameView.viewCenter.x + x - Camera.position.x,
+            GameView.viewCenter.y - y + Camera.position.y
+        )
     }
 }

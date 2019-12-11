@@ -1,25 +1,25 @@
 package naukri.engine
 
 
-abstract class Collision : Component() {
+abstract class Collider : Component() {
 
     companion object {
 
-        internal val collection = ArrayList<Collision>(256)
+        internal val collection = ArrayList<Collider>(256)
 
-        internal val onCollisionEvents = ArrayList<Behaviour>(256)
+        internal val onCollisionEvents = ArrayList<() -> Unit>(256)
 
         internal val onTouchEvents = ArrayList<() -> Unit>(32)
 
         internal val onHoldEvents = ArrayList<Behaviour>(8)
 
-        fun onTouchDown() {
+        fun getOnTouchDownEvents() {
             // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
-                    if (touch.isCollision(col) && !col.isTrigger) {
+                    if (!col.isTrigger && touch.isCollision(col)) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
                             onTouchEvents.add { it.onTouchDown() }
                             onHoldEvents.add(it)
@@ -29,13 +29,13 @@ abstract class Collision : Component() {
                 }
         }
 
-        fun onTouchMove() {
+        fun getOnTouchMoveEvents() {
             // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
-                    if (touch.isCollision(col) && !col.isTrigger) {
+                    if (!col.isTrigger && touch.isCollision(col)) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
                             onTouchEvents.add { it.onTouchMove() }
                         }
@@ -44,14 +44,14 @@ abstract class Collision : Component() {
                 }
         }
 
-        fun onTouchUp() {
+        fun getOnTouchUpEvents() {
             onHoldEvents.clear()
             // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
-                    if (touch.isCollision(col) && !col.isTrigger) {
+                    if (!col.isTrigger && touch.isCollision(col)) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
                             onTouchEvents.add { it.onTouchUp() }
                         }
@@ -60,24 +60,43 @@ abstract class Collision : Component() {
                 }
         }
 
-        fun onCollision() {
+        fun getOnCollisionEvents() {
             collection.forEach { collision ->
                 collection.forEach { other ->
-                    if (other != collision && collision.isCollision(other)) {
+                    if (!collision.isTrigger && other != collision && collision.isCollision(other)) {
                         collision.gameObject.getComponents<Behaviour>().filter { it.enable }
                             .forEach {
-                                onCollisionEvents.add(it)
+                                onCollisionEvents.add { it.onCollision(other) }
                             }
                     }
                 }
             }
         }
 
+        fun drawGizmos(){
+            collection.forEach {
+                it.drawGizmos()
+            }
+        }
+
     }
 
+    // 觸發器只能被動被觸發而沒有主動觸發其他物件的能力，且不具有 onTouch 系列的特性
     var isTrigger = false
 
-    abstract fun <T> isCollision(other: T): Boolean where T : Collision
+    // 偏移量
+    var offset = Vector2(0F, 0F)
+
+    // 碰撞器中心點
+    val colliderPosition
+        get() = Vector2(
+            transform.worldPosition.x + offset.x,
+            transform.worldPosition.y + offset.y
+        )
+
+    abstract fun <T : Collider> isCollision(other: T): Boolean
+
+    internal abstract fun drawGizmos()
 
     override fun iAwake() {
         super.iAwake()

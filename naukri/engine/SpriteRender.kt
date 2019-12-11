@@ -10,8 +10,38 @@ class SpriteRender() : Render() {
         this.sprite = sprite
     }
 
+    class Bounds(private val target: SpriteRender) {
+        val size
+            get() = Vector2(
+                target.size.x * target.transform.scale.x,
+                target.size.y * target.transform.scale.y
+            )
+
+        val left get() = target.renderPosition.x - (size.x / 2)
+
+        val top get() = target.renderPosition.y + (size.y / 2)
+
+        val right get() = target.renderPosition.x + (size.x / 2)
+
+        val bottom get() = target.renderPosition.y - (size.y / 2)
+
+        val rect get() = RectF(left, top, right, bottom)
+    }
+
     // 大小
     var size = Vector2Int(0, 0)
+
+    val left get() = renderPosition.x - (size.x shr 1)
+
+    val top get() = renderPosition.y + (size.y shr 1)
+
+    val right get() = renderPosition.x + (size.x shr 1)
+
+    val bottom get() = renderPosition.y - (size.y shr 1)
+
+    val rect get() = RectF(left, top, right, bottom)
+
+    val bounds get() = Bounds(this)
 
     // 精靈 (圖片 ID)
     var sprite = 0
@@ -24,22 +54,13 @@ class SpriteRender() : Render() {
     // 圖片
     val image get() = BitmapFactory.decodeResource(resources, sprite)
 
-    // 渲染器坐標軸
-    val renderRectF
+    // 渲染器坐標軸 (y軸相反)
+    private val renderRectF
         get() = RectF(
-            renderPosition.x - (size.x shr 1) * abs(transform.scale.x),
-            renderPosition.y - (size.y shr 1) * abs(transform.scale.y),
-            renderPosition.x + (size.x shr 1) * abs(transform.scale.x),
-            renderPosition.y + (size.y shr 1) * abs(transform.scale.y)
-        )
-
-    // 世界坐標軸
-    val worldRectF
-        get() = RectF(
-            transform.position.x - (size.x shr 1) * abs(transform.scale.x),
-            transform.position.y - (size.y shr 1) * abs(transform.scale.y),
-            transform.position.x + (size.x shr 1) * abs(transform.scale.x),
-            transform.position.y + (size.y shr 1) * abs(transform.scale.y)
+            bounds.left,
+            bounds.bottom,
+            bounds.right,
+            bounds.top
         )
 
     override fun render() {

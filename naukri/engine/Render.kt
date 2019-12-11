@@ -12,32 +12,32 @@ abstract class Render : Component() {
     }
 
     // 渲染器中心點
-    val renderPosition
+    open val renderPosition
         get() = Vector2(
             GameView.viewCenter.x + transform.worldPosition.x - Camera.position.x,
-            GameView.viewCenter.y - transform.worldPosition.y + +Camera.position.y
+            GameView.viewCenter.y - transform.worldPosition.y + Camera.position.y
         )
 
     var flipX = false
 
     var flipY = false
 
-    final override fun iAwake() {
+    override fun iAwake() {
         super.iAwake()
         collection.add(this)
     }
 
-    final override fun iOnEnable() {
+    override fun iOnEnable() {
         super.iOnEnable()
         collection.add(this)
     }
 
-    final override fun iOnDisable() {
+    override fun iOnDisable() {
         collection.remove(this)
         super.iOnDisable()
     }
 
-    final override fun iOnDestroy() {
+    override fun iOnDestroy() {
         collection.remove(this)
         super.iOnDestroy()
     }

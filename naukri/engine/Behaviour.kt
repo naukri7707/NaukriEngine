@@ -34,7 +34,7 @@ abstract class Behaviour : Component() {
 
     open fun onTouchUp() {}
 
-    open fun onCollision(other: Collision) {}
+    open fun onCollision(other: Collider) {}
 
     // 關閉接口，但引用給使用者用的乾淨接口 (如果開放)
 
@@ -87,8 +87,7 @@ abstract class Behaviour : Component() {
     final override fun iOnDestroy() {
         onDestroy()
         activeCollection.remove(this)
-        Collision.onHoldEvents.remove(this)
-        Collision.onCollisionEvents.remove(this)
+        Collider.onHoldEvents.remove(this)
         super.iOnDestroy()
     }
 }

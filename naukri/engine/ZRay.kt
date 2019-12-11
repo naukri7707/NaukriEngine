@@ -1,29 +1,43 @@
 package naukri.engine
 
-class ZRay() : Collision() {
+// 這是一個不相依於 GameObject 的元件，僅用做 onTouch 判斷
+internal class ZRay() : Collider() {
 
     constructor(x: Int, y: Int) : this() {
-        this.x = x.toFloat()
-        this.y = y.toFloat()
+        position.x = x.toFloat()
+        position.y = y.toFloat()
     }
 
     constructor(x: Float, y: Float) : this() {
-        this.x = x
-        this.y = y
+        position.x = x
+        position.y = y
     }
 
-    var x = 0F
-    var y = 0F
+    constructor(position: Vector2) : this() {
+        this.position = position
+    }
 
-    override fun <T : Collision> isCollision(other: T): Boolean {
+    var position
+        get() = offset
+        set(value) {
+            offset = value
+        }
+
+    override fun <T : Collider> isCollision(other: T): Boolean {
         when (other) {
             is BoxCollider -> {
                 val o = other as BoxCollider
-                return (x in (o.left..o.right) && y in (o.bottom..o.top))
+                return (position.x in (o.bounds.left..o.bounds.right) && position.y in (o.bounds.bottom..o.bounds.top))
             }
-            // TODO Circle Collider https://www.zhihu.com/question/24251545
+            is CircleCollider -> {
+                val dis = Vector2.distance(position, other.colliderPosition)
+                return dis < other.bounds.radius
+            }
         }
         return false
     }
 
+    override fun drawGizmos() {
+        // don't need to draw
+    }
 }

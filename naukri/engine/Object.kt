@@ -16,14 +16,7 @@ abstract class Object : java.io.Serializable {
 
         fun instantiate(gameObject: GameObject): GameObject {
             val newObject = gameObject.deepCopy()!!
-            // 觸發 enable
-            if (newObject.enable) {
-                newObject.enable = false
-                newObject.isInstantiate = true // 觸發 Awake -> components Awake
-                newObject.enable = true // 觸發 OnEnable -> components OnEnable
-            } else {
-                newObject.isInstantiate = true // 觸發 Awake -> components Awake
-            }
+            newObject.isInstantiate = true
             return newObject
         }
 

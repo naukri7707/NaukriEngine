@@ -27,10 +27,6 @@ data class Vector2Int(
         return Vector2Int() - this
     }
 
-    override fun toString(): String {
-        return "($x, $y)"
-    }
-
     fun toVector2(): Vector2 {
         return Vector2(x.toFloat(), y.toFloat())
     }

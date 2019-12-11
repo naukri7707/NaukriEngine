@@ -36,19 +36,20 @@ class GameThread(
                     Object.iStartCollection.clear()
                     // 碰撞器、觸發器更新
                     // 單次事件
-                    Collision.onTouchEvents.forEach {
+                    Collider.onTouchEvents.forEach {
                         it()
                     }
-                    Collision.onTouchEvents.clear()
+                    Collider.onTouchEvents.clear()
                     // 按住 (本項不自動清除)
-                    Collision.onHoldEvents.forEach {
+                    Collider.onHoldEvents.forEach {
                         it.onTouchHold()
                     }
                     // 碰撞事件
-//                    Collision.onCollisionEvents.forEach {
-//                        it.onCollision()
-//                    }
-                    Collision.onCollisionEvents.clear()
+                    Collider.getOnCollisionEvents()
+                    Collider.onCollisionEvents.forEach {
+                        it()
+                    }
+                    Collider.onCollisionEvents.clear()
                     // 前行為更新
                     Behaviour.activeCollection.forEach {
                         it.iEarlyUpdate()

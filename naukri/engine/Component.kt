@@ -6,6 +6,10 @@ abstract class Component : Object() {
 
     val transform get() = gameObject.transform
 
+    val name get() = gameObject.name
+
+    val tag get() = gameObject.tag
+
     // 是否實例化 (防止 gameObject 為 null)
     internal var isInstantiate = false
         internal set(value) {
