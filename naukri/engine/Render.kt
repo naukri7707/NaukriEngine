@@ -12,10 +12,10 @@ abstract class Render : Component() {
     }
 
     // 渲染器中心點
-    val reanderCenter
+    val renderPosition
         get() = Vector2(
-            GameView.viewCenter.x + transform.position.x - Camera.position.x,
-            GameView.viewCenter.y - transform.position.y + +Camera.position.y
+            GameView.viewCenter.x + transform.worldPosition.x - Camera.position.x,
+            GameView.viewCenter.y - transform.worldPosition.y + +Camera.position.y
         )
 
     var flipX = false

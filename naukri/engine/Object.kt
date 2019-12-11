@@ -35,8 +35,20 @@ abstract class Object : java.io.Serializable {
             return res.toTypedArray()
         }
 
+        fun instantiateNonCopy(gameObject: GameObject) : GameObject{
+            gameObject.isInstantiate = true
+            return gameObject
+        }
+        // 實例化物件, 如果是實例化內嵌在 instantiate() 裡面的 GameObject 應該使用這個減少運算開銷
+        fun instantiateNonCopy(vararg gameObjects : GameObject): Array<GameObject> {
+            val res = mutableListOf<GameObject>()
+            gameObjects.forEach {
+                res.add(instantiateNonCopy(it))
+            }
+            return res.toTypedArray()
+        }
+
         fun destroy(gameObject: GameObject) {
-            gameObject.enable = false // 觸發 OnDisable -> components OnDisable
             gameObject.isInstantiate = false // 觸發 OnDestroy -> components OnDestroy
         }
 

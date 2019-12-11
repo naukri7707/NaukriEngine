@@ -25,8 +25,6 @@ fun Bitmap.flip(x: Boolean, y: Boolean): Bitmap {
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
 
-// Float
-
 // Serialize
 
 fun <T : Serializable> serialize(obj: T?): String {

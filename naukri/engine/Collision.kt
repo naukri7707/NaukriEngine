@@ -14,8 +14,10 @@ abstract class Collision : Component() {
         internal val onHoldEvents = ArrayList<Behaviour>(8)
 
         fun onTouchDown() {
+            // TODO auto position for UI & world
+            // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
-            collection.sortedWith(compareBy({ it.gameObject.layer }, { -it.transform.position.z }))
+            collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
                     if (touch.isCollision(col) && !col.isTrigger) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
@@ -28,8 +30,10 @@ abstract class Collision : Component() {
         }
 
         fun onTouchMove() {
+            // TODO auto position for UI & world
+            // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
-            collection.sortedWith(compareBy({ it.gameObject.layer }, { -it.transform.position.z }))
+            collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
                     if (touch.isCollision(col) && !col.isTrigger) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
@@ -41,14 +45,16 @@ abstract class Collision : Component() {
         }
 
         fun onTouchUp() {
+            onHoldEvents.clear()
+            // TODO auto position for UI & world
+            // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
-            collection.sortedWith(compareBy({ it.gameObject.layer }, { -it.transform.position.z }))
+            collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
                     if (touch.isCollision(col) && !col.isTrigger) {
                         col.gameObject.getComponents<Behaviour>().filter { it.enable }.forEach {
                             onTouchEvents.add { it.onTouchUp() }
                         }
-                        onHoldEvents.clear()
                         return
                     }
                 }

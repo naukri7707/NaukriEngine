@@ -29,6 +29,10 @@ class GameThread(
                     Object.iStartCollection.forEach {
                         it()
                     }
+                    // 協成
+                    Coroutine.collision.forEach {
+                        it.checkCoroutine()
+                    }
                     Object.iStartCollection.clear()
                     // 碰撞器、觸發器更新
                     // 單次事件
@@ -63,7 +67,7 @@ class GameThread(
                     Render.collection.sortedWith(
                         compareBy(
                             { it.gameObject.layer },
-                            { it.transform.position.z })
+                            { it.transform.zIndex })
                     ).forEach {
                         it.render()
                     }
@@ -92,6 +96,7 @@ class GameThread(
             }
             // 更新刷新時間
             Time.deltaTime = (System.nanoTime() - startTime).toFloat() / 1000000000
+            Time.gameTime += Time.deltaTime
         }
     }
 

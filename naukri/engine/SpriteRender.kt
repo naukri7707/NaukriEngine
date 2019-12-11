@@ -27,10 +27,10 @@ class SpriteRender() : Render() {
     // 渲染器坐標軸
     val renderRectF
         get() = RectF(
-            reanderCenter.x - (size.x shr 1) * abs(transform.scale.x),
-            reanderCenter.y - (size.y shr 1) * abs(transform.scale.y),
-            reanderCenter.x + (size.x shr 1) * abs(transform.scale.x),
-            reanderCenter.y + (size.y shr 1) * abs(transform.scale.y)
+            renderPosition.x - (size.x shr 1) * abs(transform.scale.x),
+            renderPosition.y - (size.y shr 1) * abs(transform.scale.y),
+            renderPosition.x + (size.x shr 1) * abs(transform.scale.x),
+            renderPosition.y + (size.y shr 1) * abs(transform.scale.y)
         )
 
     // 世界坐標軸

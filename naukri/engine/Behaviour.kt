@@ -14,7 +14,9 @@ abstract class Behaviour : Component() {
 
     protected open fun onDestroy() {}
 
-    // Behavior
+    // Behaviour
+    protected open fun awake() {}
+
     protected open fun start() {}
 
     protected open fun earlyUpdate() {}
@@ -34,6 +36,12 @@ abstract class Behaviour : Component() {
 
     open fun onCollision(other: Collision) {}
 
+    // 關閉接口，但引用給使用者用的乾淨接口 (如果開放)
+
+    final override fun iAwake() {
+        super.iAwake()
+        awake()
+    }
 
     // iComponent
     final override fun iOnEnable() {
@@ -61,6 +69,13 @@ abstract class Behaviour : Component() {
     final override fun iLateUpdate() {
         super.iLateUpdate()
         lateUpdate()
+    }
+    final override fun iOnCollision() {
+        super.iOnCollision()
+    }
+
+    final override fun iRender() {
+        super.iRender()
     }
 
     final override fun iOnDisable() {

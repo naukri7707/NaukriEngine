@@ -23,6 +23,10 @@ data class Vector2Int(
         return Vector2Int(this.x / other, this.y / other)
     }
 
+    operator fun unaryMinus(): Vector2Int {
+        return Vector2Int() - this
+    }
+
     override fun toString(): String {
         return "($x, $y)"
     }
@@ -30,13 +34,4 @@ data class Vector2Int(
     fun toVector2(): Vector2 {
         return Vector2(x.toFloat(), y.toFloat())
     }
-
-    fun toVector3(): Vector3 {
-        return Vector3(x.toFloat(), y.toFloat(), 0F)
-    }
-
-    fun toVector3Int(): Vector3Int {
-        return Vector3Int(x, y, 0)
-    }
-
 }

@@ -3,12 +3,11 @@ package naukri.engine
 class GameObject(vararg components: Component) : Object() {
 
     companion object {
-
         // 實例化物件搜集器
         private var mInstantiateCollection = ArrayList<GameObject>(1024)
 
-        // 活性元件搜集器
-        private val mActiveCollection = ArrayList<GameObject>(512)
+        // 根物件，一切物件的祖物件，新增物件的預設父物件
+        private val root = GameObject()
 
         // 用名子尋找
         fun find(name: String): GameObject? {
@@ -31,18 +30,21 @@ class GameObject(vararg components: Component) : Object() {
             return res.toTypedArray()
         }
 
+        // 實例化物件, 如果是實例化預製物件的話應該使用這個
         fun instantiate(gameObject: GameObject): GameObject {
-            val newObject = gameObject.deepCopy()!!
-            newObject.isInstantiate = true // 觸發 Awake -> components Awake
-            return newObject
+            return Object.instantiate(gameObject)
         }
 
-        fun instantiate(vararg gameObjects: GameObject): Array<GameObject> {
-            val res = mutableListOf<GameObject>()
-            gameObjects.forEach {
-                res.add(instantiate(it))
-            }
-            return res.toTypedArray()
+        fun instantiate(vararg gameObjects : GameObject): Array<GameObject> {
+            return Object.instantiate(*gameObjects)
+        }
+
+        fun instantiateNonCopy(gameObject: GameObject) : GameObject{
+            return Object.instantiateNonCopy(gameObject)
+        }
+        // 實例化物件, 如果是實例化內嵌在 instantiate() 裡面的 GameObject 應該使用這個減少運算開銷
+        fun instantiateNonCopy(vararg gameObjects : GameObject): Array<GameObject> {
+            return Object.instantiateNonCopy(*gameObjects)
         }
 
         fun destroy(gameObject: GameObject) {
@@ -54,11 +56,31 @@ class GameObject(vararg components: Component) : Object() {
         }
     }
 
+    // 物件本身
     val gameObject get() = this
 
+    // 轉換器 (元件)
     val transform = Transform()
 
+    // 元件
     val components = ArrayList<Component>()
+
+    // 父物件
+    var parent = root
+        set(value) {
+            field.children.remove(this)
+            value.children.add(this)
+            field = value
+        }
+
+    // 子物件
+    val children = ArrayList<GameObject>()
+
+    var name = ""
+
+    var tag = ""
+
+    var layer = Layer.Default
 
     // 是否實例化
     internal var isInstantiate = false
@@ -67,7 +89,7 @@ class GameObject(vararg components: Component) : Object() {
                 if (value) {
                     mInstantiateCollection.add(this)
                     iAwake()
-                    if(enable) {
+                    if (enable) {
                         iStartCollection.add { iStart() }
                     }
                 } else {
@@ -83,22 +105,14 @@ class GameObject(vararg components: Component) : Object() {
         set(value) {
             if (value != field && isInstantiate) {
                 if (value) {
-                    mActiveCollection.add(this)
                     iOnEnableCollection.add { iOnEnable() }
                     iStartCollection.add { iStart() }
                 } else {
                     iOnDisableCollection.add { iOnDisable() }
-                    mActiveCollection.remove(this)
                 }
             }
             field = value
         }
-
-    var name = ""
-
-    var tag = ""
-
-    var layer = Layer.Default
 
     init {
         transform.gameObject = this
@@ -109,12 +123,13 @@ class GameObject(vararg components: Component) : Object() {
         }
     }
 
-    constructor(name: String, vararg components: Component) : this(*components) {
-        this.name = name
-    }
-
-    constructor(name: String, tag: String, vararg components: Component) : this(name, *components) {
-        this.tag = tag
+    // 帶有擴充建構函式的建構子，執行順序如下
+    // init -> components Awake -> constructFunc
+    constructor(
+        vararg components: Component,
+        constructFunc: (GameObject) -> Unit
+    ) : this(*components) {
+        constructFunc(this)
     }
 
     override fun iAwake() {
@@ -141,9 +156,7 @@ class GameObject(vararg components: Component) : Object() {
 
     override fun iOnDestroy() {
         components.forEach {
-            if (it.enable) {
-                it.isInstantiate = false
-            }
+            it.isInstantiate = false
         }
     }
 

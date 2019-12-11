@@ -12,7 +12,7 @@ data class Vector2(
 
         // 線性插值
         fun lerp(from: Vector2, to: Vector2, proportion: Float): Vector2 {
-            return (from + to) * proportion
+            return from - (from - to) * proportion
         }
 
         // 距離
@@ -21,10 +21,17 @@ data class Vector2(
             return sqrt(m.x * m.x + m.y * m.y)
         }
 
-        // 距離 ( 讓 V3 忽略 Z 軸計算)
-        fun distance(from: Vector3, to: Vector3): Float {
-            val m = from - to
-            return sqrt(m.x * m.x + m.y * m.y)
+        // 限定範圍
+        fun clamp(value: Vector2, min: Vector2, max: Vector2): Vector2 {
+            when {
+                value.x < min.x -> value.x = min.x
+                value.x > min.x -> value.x = max.x
+            }
+            when {
+                value.y < min.y -> value.y = min.y
+                value.y > min.y -> value.y = max.y
+            }
+            return value
         }
     }
 
@@ -44,19 +51,15 @@ data class Vector2(
         return Vector2(this.x / other, this.y / other)
     }
 
+    operator fun unaryMinus(): Vector2 {
+        return Vector2() - this
+    }
+
     override fun toString(): String {
         return "($x, $y)"
     }
 
     fun toVector2Int(): Vector2Int {
         return Vector2Int(x.toInt(), y.toInt())
-    }
-
-    fun toVector3(): Vector3 {
-        return Vector3(x, y, 0F)
-    }
-
-    fun toVector3Int(): Vector3Int {
-        return Vector3Int(x.toInt(), y.toInt(), 0)
     }
 }

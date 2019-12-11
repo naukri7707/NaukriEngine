@@ -8,13 +8,13 @@ class BoxCollider() : Collision() {
 
     var offset = Vector2(0F, 0F)
 
-    val left get() = transform.position.x + offset.x - (size.x / 2) * abs(transform.scale.x)
+    val left get() = transform.worldPosition.x + offset.x - (size.x / 2) * abs(transform.scale.x)
 
-    val top get() = transform.position.y + offset.y + (size.y / 2) * abs(transform.scale.y)
+    val top get() = transform.worldPosition.y + offset.y + (size.y / 2) * abs(transform.scale.y)
 
-    val right get() = transform.position.x + offset.x + (size.x / 2) * abs(transform.scale.x)
+    val right get() = transform.worldPosition.x + offset.x + (size.x / 2) * abs(transform.scale.x)
 
-    val bottom get() = transform.position.y + offset.y - (size.y / 2) * abs(transform.scale.y)
+    val bottom get() = transform.worldPosition.y + offset.y - (size.y / 2) * abs(transform.scale.y)
 
     override fun <T> isCollision(other: T): Boolean where T : Collision {
         when (other) {

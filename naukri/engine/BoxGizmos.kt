@@ -15,10 +15,10 @@ class BoxGizmos(
         p.style = Paint.Style.STROKE
         canvas?.drawRect(
             RectF(
-                reanderCenter.x - (target.size.x / 2),
-                reanderCenter.y - (target.size.y / 2),
-                reanderCenter.x + (target.size.x / 2),
-                reanderCenter.y + (target.size.y / 2)
+                renderPosition.x - (target.size.x / 2),
+                renderPosition.y - (target.size.y / 2),
+                renderPosition.x + (target.size.x / 2),
+                renderPosition.y + (target.size.y / 2)
             ), p
         )
     }

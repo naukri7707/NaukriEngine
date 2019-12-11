@@ -79,12 +79,12 @@ class GameView(
             applicationContext = context
             this.displayMetrics = displayMetrics
             Object.resources = applicationContext.resources
-            // 全螢幕
+            // 全螢幕 (隱藏 Title Bar)
             context.window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
-            // 隱藏虛擬按鍵
+            // 沉浸模式
             gameView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
