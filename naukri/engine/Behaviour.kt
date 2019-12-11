@@ -25,7 +25,7 @@ abstract class Behaviour : Component() {
 
     protected open fun lateUpdate() {}
 
-    // Collider TODO
+    // Collider
     open fun onTouchDown() {}
 
     open fun onTouchHold() {}

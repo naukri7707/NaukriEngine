@@ -14,7 +14,6 @@ abstract class Collider : Component() {
         internal val onHoldEvents = ArrayList<Behaviour>(8)
 
         fun getOnTouchDownEvents() {
-            // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
@@ -30,7 +29,6 @@ abstract class Collider : Component() {
         }
 
         fun getOnTouchMoveEvents() {
-            // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
@@ -46,7 +44,6 @@ abstract class Collider : Component() {
 
         fun getOnTouchUpEvents() {
             onHoldEvents.clear()
-            // TODO auto position for UI & world
             // TO world position
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
