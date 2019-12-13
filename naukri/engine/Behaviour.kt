@@ -25,7 +25,7 @@ abstract class Behaviour : Component() {
 
     protected open fun lateUpdate() {}
 
-    // Collider
+    // Touch Events
     open fun onTouchDown() {}
 
     open fun onTouchHold() {}
@@ -34,7 +34,12 @@ abstract class Behaviour : Component() {
 
     open fun onTouchUp() {}
 
-    open fun onCollision(other: Collider) {}
+    // Collision Events
+    open fun onCollisionEnter(other: Collider) {}
+
+    open fun onCollisionStay(other: Collider) {}
+
+    open fun onCollisionLeave(other: Collider) {}
 
     // 關閉接口，但引用給使用者用的乾淨接口 (如果開放)
 

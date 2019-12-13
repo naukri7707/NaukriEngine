@@ -9,31 +9,33 @@ class GameThread(
 
     override fun run() {
         // 每幀開始時間
-        var startTime: Long
+        var startTime = System.nanoTime()
         while (isRunning) {
-            startTime = System.nanoTime()
-
             Render.canvas = null
 
+            // 更新刷新時間
+            Time.deltaTime = (System.nanoTime() - startTime).toFloat() / 1000000000
+            Time.gameTime += Time.deltaTime
+            startTime = System.nanoTime()
             try {
                 // 鎖定可以被畫上的畫布
                 Render.canvas = this.surfaceHolder.lockCanvas()
                 // 同步本執行緒保證其他執行緒無法修改 surfaceHolder (畫布在這裡)
                 synchronized(surfaceHolder) {
-                    // 啟動
-                    Object.iOnEnableCollection.forEach {
-                        it()
-                    }
-                    Object.iOnEnableCollection.clear()
-                    // 初始化
-                    Object.iStartCollection.forEach {
-                        it()
-                    }
-                    // 協成
-                    Coroutine.collision.forEach {
+                    // 延時函式
+                    Invoke.collision.forEach {
                         it.checkCoroutine()
                     }
-                    Object.iStartCollection.clear()
+                    // 啟動
+                    Component.iOnEnableCollection.forEach {
+                        it()
+                    }
+                    Component.iOnEnableCollection.clear()
+                    // 初始化
+                    Component.iStartCollection.forEach {
+                        it()
+                    }
+                    Component.iStartCollection.clear()
                     // 碰撞器、觸發器更新
                     // 單次事件
                     Collider.onTouchEvents.forEach {
@@ -73,15 +75,15 @@ class GameThread(
                         it.render()
                     }
                     // 關閉
-                    Object.iOnDisableCollection.forEach {
+                    Component.iOnDisableCollection.forEach {
                         it()
                     }
-                    Object.iOnDisableCollection.clear()
+                    Component.iOnDisableCollection.clear()
                     // 移除
-                    Object.iOnDestroyCollection.forEach {
+                    Component.iOnDestroyCollection.forEach {
                         it()
                     }
-                    Object.iOnDestroyCollection.clear()
+                    Component.iOnDestroyCollection.clear()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -95,9 +97,6 @@ class GameThread(
                     }
                 }
             }
-            // 更新刷新時間
-            Time.deltaTime = (System.nanoTime() - startTime).toFloat() / 1000000000
-            Time.gameTime += Time.deltaTime
         }
     }
 

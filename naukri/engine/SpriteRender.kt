@@ -1,10 +1,21 @@
 package naukri.engine
 
 import android.graphics.*
+import android.media.Image
 import kotlin.math.abs
 
 
 class SpriteRender() : Render() {
+
+    companion object {
+        // 讓 BitmapFactory 不要重新採樣
+        val options: BitmapFactory.Options by lazy {
+            val op = BitmapFactory.Options()
+            op.inScaled = false
+            return@lazy op
+        }
+    }
+
 
     constructor(sprite: Int) : this() {
         this.sprite = sprite
@@ -47,12 +58,13 @@ class SpriteRender() : Render() {
     var sprite = 0
         set(value) {
             field = value
-            val img = image
-            size = Vector2Int(img.width, img.height)
+            image = BitmapFactory.decodeResource(resources, sprite, options)
+            size = Vector2Int(image.width, image.height)
         }
 
     // 圖片
-    val image get() = BitmapFactory.decodeResource(resources, sprite)
+    @Transient
+    lateinit var image: Bitmap
 
     // 渲染器坐標軸 (y軸相反)
     private val renderRectF
@@ -63,11 +75,14 @@ class SpriteRender() : Render() {
             bounds.top
         )
 
+    override fun iAwake() {
+        super.iAwake()
+        sprite = sprite // 讓實例化 prefab 時能正確賦予image值
+    }
+
     override fun render() {
-        if (image != null) {
-            canvas?.drawBitmap(
-                image.flip(flipX, flipY), Rect(0, 0, size.x, size.y), renderRectF, null
-            )
-        }
+        canvas?.drawBitmap(
+            image.flip(flipX, flipY), Rect(0, 0, size.x, size.y), renderRectF, null
+        )
     }
 }

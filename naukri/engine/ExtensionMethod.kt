@@ -1,10 +1,13 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package naukri.engine
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.util.Log
 import java.io.*
-import java.util.*
+import kotlin.random.Random
+
 
 // Debug
 object Assert {
@@ -23,6 +26,24 @@ fun Bitmap.flip(x: Boolean, y: Boolean): Bitmap {
     val sy = if (y) -1F else 1F
     val matrix = Matrix().apply { postScale(sx, sy, width / 2f, width / 2f) }
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+
+fun Random.range(min: Float, max: Float): Float {
+    return min + nextFloat() * (max - min)
+}
+
+// 將 float 限制在區域內
+fun Float.Companion.clamp(value: Float, min: Float, max: Float): Float {
+    return when {
+        value < min -> min
+        value > min -> max
+        else -> value
+    }
+}
+
+// 線性插值
+fun Float.Companion.lerp(from: Float, to: Float, proportion: Float): Float {
+    return from - (from - to) * proportion
 }
 
 // Serialize
@@ -49,8 +70,6 @@ fun <T : Serializable> deserialize(string: String): T? {
 
     return ois.readObject() as T
 }
-
-fun <T : Serializable> deserialize(string: String, clazz: Class<T>): T? = deserialize<T>(string)
 
 
 fun <T : Serializable> T.deepCopy(): T? {

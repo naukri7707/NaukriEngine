@@ -2,6 +2,14 @@ package naukri.engine
 
 abstract class Component : Object() {
 
+    companion object{
+        // 啟發式狀態搜集器
+        internal val iOnEnableCollection = ArrayList<() -> Unit>(256)
+        internal val iStartCollection = ArrayList<() -> Unit>(512)
+        internal val iOnDisableCollection = ArrayList<() -> Unit>(256)
+        internal val iOnDestroyCollection = ArrayList<() -> Unit>(256)
+    }
+
     lateinit var gameObject: GameObject
 
     val transform get() = gameObject.transform
@@ -40,6 +48,36 @@ abstract class Component : Object() {
                 field = value
             }
         }
+
+    // 實例化後
+    internal open fun iAwake() {}
+
+    // 啟動時
+    internal open fun iOnEnable() {}
+
+    // 啟動後首幀
+    internal open fun iStart() {}
+
+    // 每幀碰撞
+    internal open fun iOnCollision() {}
+
+    // 每幀早更新
+    internal open fun iEarlyUpdate() {}
+
+    // 每幀更新
+    internal open fun iUpdate() {}
+
+    // 每幀晚更新
+    internal open fun iLateUpdate() {}
+
+    // 每幀渲染
+    internal open fun iRender() {}
+
+    // 關閉時
+    internal open fun iOnDisable() {}
+
+    // 刪除時
+    internal open fun iOnDestroy() {}
 
     // Create
     fun <T : Component> addComponent(component: T): T {

@@ -35,6 +35,10 @@ class GameObject(vararg components: Component) : Object() {
             return Object.instantiate(gameObject)
         }
 
+        fun instantiate(gameObject: GameObject, position: Vector2): GameObject {
+            return Object.instantiate(gameObject, position)
+        }
+
         fun instantiate(vararg gameObjects : GameObject): Array<GameObject> {
             return Object.instantiate(*gameObjects)
         }
@@ -88,12 +92,13 @@ class GameObject(vararg components: Component) : Object() {
             if (value != field) {
                 if (value) {
                     mInstantiateCollection.add(this)
-                    iAwake()
-                    if (enable) {
-                        iStartCollection.add { iStart() }
+                    components.forEach {
+                        it.isInstantiate = true
                     }
                 } else {
-                    iOnDestroyCollection.add { iOnDestroy() }
+                    components.forEach {
+                        it.isInstantiate = false
+                    }
                     mInstantiateCollection.remove(this)
                 }
                 field = value
@@ -105,10 +110,17 @@ class GameObject(vararg components: Component) : Object() {
         set(value) {
             if (value != field && isInstantiate) {
                 if (value) {
-                    iOnEnableCollection.add { iOnEnable() }
-                    iStartCollection.add { iStart() }
+                    components.forEach {
+                        if (it.enable) {
+                            it.enable = true
+                        }
+                    }
                 } else {
-                    iOnDisableCollection.add { iOnDisable() }
+                    components.forEach {
+                        if (it.enable) {
+                            it.enable = false
+                        }
+                    }
                 }
             }
             field = value
@@ -130,34 +142,6 @@ class GameObject(vararg components: Component) : Object() {
         constructFunc: (GameObject) -> Unit
     ) : this(*components) {
         constructFunc(this)
-    }
-
-    override fun iAwake() {
-        components.forEach {
-            it.isInstantiate = true
-        }
-    }
-
-    override fun iOnEnable() {
-        components.forEach {
-            if (it.enable) {
-                it.enable = true
-            }
-        }
-    }
-
-    override fun iOnDisable() {
-        components.forEach {
-            if (it.enable) {
-                it.enable = false
-            }
-        }
-    }
-
-    override fun iOnDestroy() {
-        components.forEach {
-            it.isInstantiate = false
-        }
     }
 
     // Create

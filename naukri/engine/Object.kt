@@ -2,20 +2,25 @@ package naukri.engine
 
 
 import android.content.res.Resources
+import android.icu.text.Transliterator
 
 abstract class Object : java.io.Serializable {
 
     companion object {
-        // 啟發式狀態搜集器
-        internal val iOnEnableCollection = ArrayList<() -> Unit>(256)
-        internal val iStartCollection = ArrayList<() -> Unit>(512)
-        internal val iOnDisableCollection = ArrayList<() -> Unit>(256)
-        internal val iOnDestroyCollection = ArrayList<() -> Unit>(256)
+        private const val serialVersionUID = 27140617107590L
+
         // Resource from MainActivity (Entry)
         lateinit var resources: Resources
 
         fun instantiate(gameObject: GameObject): GameObject {
             val newObject = gameObject.deepCopy()!!
+            newObject.isInstantiate = true
+            return newObject
+        }
+
+        fun instantiate(gameObject: GameObject, position: Vector2): GameObject {
+            val newObject = gameObject.deepCopy()!!
+            newObject.transform.position = position
             newObject.isInstantiate = true
             return newObject
         }
@@ -49,35 +54,4 @@ abstract class Object : java.io.Serializable {
             target.isInstantiate = false
         }
     }
-
-    // 實例化後
-    internal open fun iAwake() {}
-
-    // 啟動時
-    internal open fun iOnEnable() {}
-
-    // 啟動後首幀
-    internal open fun iStart() {}
-
-    // 每幀碰撞
-    internal open fun iOnCollision() {}
-
-    // 每幀早更新
-    internal open fun iEarlyUpdate() {}
-
-    // 每幀更新
-    internal open fun iUpdate() {}
-
-    // 每幀晚更新
-    internal open fun iLateUpdate() {}
-
-    // 每幀渲染
-    internal open fun iRender() {}
-
-    // 關閉時
-    internal open fun iOnDisable() {}
-
-    // 刪除時
-    internal open fun iOnDestroy() {}
-
 }
