@@ -55,13 +55,13 @@ class BoxRender() : Render() {
 
     val bounds get() = Bounds(this)
 
-    // 世界坐標軸下的 rect
-    val worldRect
+    // 渲染器坐標軸 (y軸相反)
+    private val renderRectF
         get() = RectF(
-            renderPosition.x + left * transform.scale.x,
-            renderPosition.y + top * transform.scale.y,
-            renderPosition.x + right * transform.scale.x,
-            renderPosition.y + bottom * transform.scale.y
+            bounds.left,
+            bounds.bottom,
+            bounds.right,
+            bounds.top
         )
 
     val width get() = right - left
@@ -79,7 +79,7 @@ class BoxRender() : Render() {
 
     override fun render() {
         canvas?.drawRect(
-            worldRect, paint
+            renderRectF, paint
         )
     }
 }

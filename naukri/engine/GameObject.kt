@@ -7,7 +7,7 @@ class GameObject(vararg components: Component) : Object() {
         private var mInstantiateCollection = ArrayList<GameObject>(1024)
 
         // 根物件，一切物件的祖物件，新增物件的預設父物件
-        private val root = GameObject()
+        private val root = GameObject { it.name = "Root" }
 
         // 用名子尋找
         fun find(name: String): GameObject? {
@@ -39,15 +39,16 @@ class GameObject(vararg components: Component) : Object() {
             return Object.instantiate(gameObject, position)
         }
 
-        fun instantiate(vararg gameObjects : GameObject): Array<GameObject> {
+        fun instantiate(vararg gameObjects: GameObject): Array<GameObject> {
             return Object.instantiate(*gameObjects)
         }
 
-        fun instantiateNonCopy(gameObject: GameObject) : GameObject{
+        fun instantiateNonCopy(gameObject: GameObject): GameObject {
             return Object.instantiateNonCopy(gameObject)
         }
+
         // 實例化物件, 如果是實例化內嵌在 instantiate() 裡面的 GameObject 應該使用這個減少運算開銷
-        fun instantiateNonCopy(vararg gameObjects : GameObject): Array<GameObject> {
+        fun instantiateNonCopy(vararg gameObjects: GameObject): Array<GameObject> {
             return Object.instantiateNonCopy(*gameObjects)
         }
 
@@ -70,7 +71,7 @@ class GameObject(vararg components: Component) : Object() {
     val components = ArrayList<Component>()
 
     // 父物件
-    var parent = root
+    var parent = this
         set(value) {
             field.children.remove(this)
             value.children.add(this)

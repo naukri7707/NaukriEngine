@@ -14,7 +14,7 @@ abstract class Collider : Component() {
         internal val onHoldEvents = ArrayList<Behaviour>(8)
 
         fun getOnTouchDownEvents() {
-            // TO world position
+            // TO world localPosition
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
@@ -29,7 +29,7 @@ abstract class Collider : Component() {
         }
 
         fun getOnTouchMoveEvents() {
-            // TO world position
+            // TO world localPosition
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
@@ -44,7 +44,7 @@ abstract class Collider : Component() {
 
         fun getOnTouchUpEvents() {
             onHoldEvents.clear()
-            // TO world position
+            // TO world localPosition
             val touch = ZRay(ScreenEvent.x, ScreenEvent.y)
             collection.sortedWith(compareBy({ it.gameObject.layer }, { it.transform.zIndex }))
                 .forEach { col ->
@@ -103,8 +103,8 @@ abstract class Collider : Component() {
     // 碰撞器中心點
     val colliderPosition
         get() = Vector2(
-            transform.worldPosition.x + offset.x,
-            transform.worldPosition.y + offset.y
+            transform.position.x + offset.x,
+            transform.position.y + offset.y
         )
 
     private val collisions = ArrayList<Collider>(4)

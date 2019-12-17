@@ -7,6 +7,11 @@ class GameThread(
     private val gameView: GameView
 ) : Thread() {
 
+    override fun start() {
+        super.start()
+        GameView.setResolution(gameView.width, gameView.height)
+    }
+
     override fun run() {
         // 每幀開始時間
         var startTime = System.nanoTime()

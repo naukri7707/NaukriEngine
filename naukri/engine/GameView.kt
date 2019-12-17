@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 
@@ -24,6 +23,7 @@ class GameView(
     override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
         // 開始執行緒
         thread.start()
+        gameInitial()
     }
 
     override fun surfaceChanged(surfaceHolder: SurfaceHolder, i: Int, i1: Int, i2: Int) {
@@ -43,19 +43,21 @@ class GameView(
         }
     }
 
+    var gameInitial = {}
+
     companion object {
 
         lateinit var applicationContext: AppCompatActivity
 
-        lateinit var displayMetrics: DisplayMetrics
-
         lateinit var main: GameView
 
-        var viewWidth = 0
+        var width = 0
             private set
-        var viewHeight = 0
+
+        var height = 0
             private set
-        var viewCenter = Point(0, 0)
+
+        var renderCenter = Point(0, 0)
             private set
 
         var left = 0
@@ -70,14 +72,12 @@ class GameView(
         @SuppressLint("ClickableViewAccessibility")
         fun startGame(
             gameView: GameView,
-            displayMetrics: DisplayMetrics,
             context: AppCompatActivity,
             init: () -> Unit
         ) {
             // 設置靜態物件
             main = gameView
             applicationContext = context
-            this.displayMetrics = displayMetrics
             Object.resources = applicationContext.resources
             // 全螢幕 (隱藏 Title Bar)
             context.window.setFlags(
@@ -108,18 +108,20 @@ class GameView(
                 }
                 return@setOnTouchListener true
             }
-            // 設置靜態變數
-            viewWidth = displayMetrics.widthPixels
-            viewHeight = displayMetrics.heightPixels
-            viewCenter = Point(viewWidth shr 1, viewHeight shr 1)
-            left = -viewCenter.x
-            right = viewCenter.x
-            top = viewCenter.y
-            bottom = -viewCenter.y
             // 外部初始化接口
-            init()
+            gameView.gameInitial = init
             // 啟動遊戲
             GameThread.isRunning = true
+        }
+
+        fun setResolution(width: Int, height: Int) {
+            this.width = width
+            this.height = height
+            renderCenter = Point(width shr 1, height shr 1)
+            left = -renderCenter.x
+            right = renderCenter.x
+            top = renderCenter.y
+            bottom = -renderCenter.y
         }
     }
 }

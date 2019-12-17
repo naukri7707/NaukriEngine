@@ -19,9 +19,9 @@ class ScreenEvent {
 
         val position get() = Vector2(x, y)
 
-        val x get() = mMotionEvent.x - GameView.viewCenter.x - Camera.position.x
+        val x get() = mMotionEvent.x - GameView.renderCenter.x - Camera.position.x
 
-        val y get() = GameView.viewCenter.y - Camera.position.y - mMotionEvent.y
+        val y get() = GameView.renderCenter.y - Camera.position.y - mMotionEvent.y
 
         val action get() = mMotionEvent.action
     }

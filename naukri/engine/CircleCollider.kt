@@ -38,8 +38,8 @@ class CircleCollider : Collider() {
             }
             is CircleCollider -> {
                 val dis = Vector2.distance(
-                    gameObject.transform.worldPosition,
-                    other.transform.worldPosition
+                    gameObject.transform.position,
+                    other.transform.position
                 )
                 return dis <= bounds.radius + other.bounds.radius
             }
