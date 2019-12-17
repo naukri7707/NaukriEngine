@@ -29,7 +29,7 @@ class GameThread(
                 synchronized(surfaceHolder) {
                     // 延時函式
                     Invoke.collision.forEach {
-                        it.checkCoroutine()
+                        it.checkInvoke()
                     }
                     // 啟動
                     Component.iOnEnableCollection.forEach {

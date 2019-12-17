@@ -14,7 +14,7 @@ open class Invoke(
         collision.add(this)
     }
 
-    internal open fun checkCoroutine() {
+    internal open fun checkInvoke() {
         if (Time.gameTime > endTime) {
             method()
             stop()
@@ -28,10 +28,10 @@ open class Invoke(
 
 class InvokeRepeating(
     time: Float,
-    private val repeatRate: Float,
+    val repeatRate: Float,
     method: () -> Unit
 ) : Invoke(time, method) {
-    override fun checkCoroutine() {
+    override fun checkInvoke() {
         if (Time.gameTime > endTime) {
             method()
             endTime += repeatRate

@@ -12,7 +12,7 @@ class Transform : Component() {
             field = value
         }
     // 圖層索引，越大越上層
-    var zIndex = 0F
+    var zIndex = 0
 
     // 真實坐標軸
     var position: Vector2

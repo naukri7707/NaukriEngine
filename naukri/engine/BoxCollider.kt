@@ -46,8 +46,8 @@ class BoxCollider : Collider() {
         when (other) {
             is BoxCollider -> {
                 val o = other as BoxCollider
-                return (o.bounds.left in (bounds.left..bounds.right) || o.bounds.right in (bounds.left..bounds.right) &&
-                        o.bounds.top in (bounds.bottom..bounds.top) || o.bounds.bottom in (bounds.bottom..bounds.top))
+                return ((o.bounds.left in (bounds.left..bounds.right) || o.bounds.right in (bounds.left..bounds.right)) &&
+                        (o.bounds.top in (bounds.bottom..bounds.top) || o.bounds.bottom in (bounds.bottom..bounds.top)))
             }
             is CircleCollider -> {
                 // 將範圍縮限在第一象限內
