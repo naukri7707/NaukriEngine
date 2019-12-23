@@ -28,12 +28,15 @@ class CircleRender() : Render() {
 
     var style = Paint.Style.STROKE
 
-    val paint: Paint
+    var alpha = 255
+
+    private val paint: Paint
         get() {
             val p = Paint()
             p.color = color
             p.strokeWidth = strokeWidth
             p.style = style
+            p.alpha = alpha
             return p
         }
 

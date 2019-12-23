@@ -1,40 +1,37 @@
 package naukri.engine
 
-open class Invoke(
+class Invoke(
     time: Float,
-    protected val method: () -> Unit
+    val method: (Invoke) -> Unit
 ) {
     companion object {
         val collision = ArrayList<Invoke>(128)
     }
 
-    protected var endTime = Time.gameTime + time
+    var repeatRate = -1F
+
+    private var endTime = Time.gameTime + time
+
+    constructor(time: Float, repeatRate: Float, method: (Invoke) -> Unit) : this(time, method) {
+        this.repeatRate = repeatRate
+    }
 
     init {
         collision.add(this)
     }
 
-    internal open fun checkInvoke() {
+    internal fun checkInvoke() {
         if (Time.gameTime > endTime) {
-            method()
-            stop()
+            method(this)
+            if (repeatRate == -1F) {
+                stop()
+            } else {
+                endTime += repeatRate
+            }
         }
     }
 
     fun stop() {
         collision.remove(this)
-    }
-}
-
-class InvokeRepeating(
-    time: Float,
-    val repeatRate: Float,
-    method: () -> Unit
-) : Invoke(time, method) {
-    override fun checkInvoke() {
-        if (Time.gameTime > endTime) {
-            method()
-            endTime += repeatRate
-        }
     }
 }

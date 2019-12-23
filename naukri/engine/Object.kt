@@ -1,8 +1,6 @@
 package naukri.engine
 
-
 import android.content.res.Resources
-import android.icu.text.Transliterator
 
 abstract class Object : java.io.Serializable {
 
@@ -22,6 +20,13 @@ abstract class Object : java.io.Serializable {
             val newObject = gameObject.deepCopy()!!
             newObject.transform.position = position
             newObject.isInstantiate = true
+            return newObject
+        }
+
+        fun instantiate(gameObject: GameObject, parent: Transform): GameObject {
+            val newObject = gameObject.deepCopy()!!
+            newObject.isInstantiate = true
+            newObject.transform.parent = parent
             return newObject
         }
 
@@ -48,6 +53,9 @@ abstract class Object : java.io.Serializable {
 
         fun destroy(gameObject: GameObject) {
             gameObject.isInstantiate = false // 觸發 OnDestroy -> components OnDestroy
+            gameObject.children.forEach {
+                it.gameObject.isInstantiate = false
+            }
         }
 
         fun <T : Component> destroy(target: T) {

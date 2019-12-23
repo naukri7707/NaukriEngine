@@ -43,6 +43,8 @@ class BoxRender() : Render() {
 
     var style = Paint.Style.STROKE
 
+    var alpha = 255
+
     val left get() = renderPosition.x - (size.x / 2)
 
     val top get() = renderPosition.y + (size.y / 2)
@@ -68,12 +70,13 @@ class BoxRender() : Render() {
 
     val height get() = bottom - top
 
-    val paint: Paint
+    private val paint: Paint
         get() {
             val p = Paint()
             p.color = color
             p.strokeWidth = strokeWidth
             p.style = style
+            p.alpha = alpha
             return p
         }
 

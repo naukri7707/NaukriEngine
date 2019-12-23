@@ -13,20 +13,17 @@ class GameThread(
     }
 
     override fun run() {
-        // 每幀開始時間
-        var startTime = System.nanoTime()
+        // 初始化時間
+        Time.updateTime()
         while (isRunning) {
             Render.canvas = null
-
-            // 更新刷新時間
-            Time.deltaTime = (System.nanoTime() - startTime).toFloat() / 1000000000
-            Time.gameTime += Time.deltaTime
-            startTime = System.nanoTime()
             try {
                 // 鎖定可以被畫上的畫布
                 Render.canvas = this.surfaceHolder.lockCanvas()
                 // 同步本執行緒保證其他執行緒無法修改 surfaceHolder (畫布在這裡)
                 synchronized(surfaceHolder) {
+                    // 更新時間
+                    Time.updateTime()
                     // 延時函式
                     Invoke.collision.forEach {
                         it.checkInvoke()

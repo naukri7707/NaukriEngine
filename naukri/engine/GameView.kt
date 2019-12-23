@@ -51,11 +51,12 @@ class GameView(
 
         lateinit var main: GameView
 
-        var width = 0
+        var size = Vector2Int()
             private set
 
-        var height = 0
-            private set
+        val width get() = size.x
+
+        val height  get() = size.y
 
         var renderCenter = Point(0, 0)
             private set
@@ -115,8 +116,8 @@ class GameView(
         }
 
         fun setResolution(width: Int, height: Int) {
-            this.width = width
-            this.height = height
+            this.size.x = width
+            this.size.y = height
             renderCenter = Point(width shr 1, height shr 1)
             left = -renderCenter.x
             right = renderCenter.x

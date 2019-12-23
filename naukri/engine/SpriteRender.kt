@@ -5,7 +5,7 @@ import android.media.Image
 import kotlin.math.abs
 
 
-class SpriteRender() : Render() {
+open class SpriteRender() : Render() {
 
     companion object {
         // 讓 BitmapFactory 不要重新採樣
@@ -42,6 +42,8 @@ class SpriteRender() : Render() {
     // 大小
     var size = Vector2Int(0, 0)
 
+    var alpha = 255
+
     val left get() = renderPosition.x - (size.x shr 1)
 
     val top get() = renderPosition.y + (size.y shr 1)
@@ -55,7 +57,7 @@ class SpriteRender() : Render() {
     val bounds get() = Bounds(this)
 
     // 精靈 (圖片 ID)
-    var sprite = 0
+    open var sprite = 0
         set(value) {
             field = value
             image = BitmapFactory.decodeResource(resources, sprite, options)
@@ -75,6 +77,13 @@ class SpriteRender() : Render() {
             bounds.top
         )
 
+    private val paint: Paint
+        get() {
+            val p = Paint()
+            p.alpha = alpha
+            return p
+        }
+
     override fun iAwake() {
         super.iAwake()
         sprite = sprite // 讓實例化 prefab 時能正確賦予image值
@@ -82,7 +91,7 @@ class SpriteRender() : Render() {
 
     override fun render() {
         canvas?.drawBitmap(
-            image.flip(flipX, flipY), Rect(0, 0, size.x, size.y), renderRectF, null
+            image.flip(flipX, flipY), Rect(0, 0, size.x, size.y), renderRectF, paint
         )
     }
 }

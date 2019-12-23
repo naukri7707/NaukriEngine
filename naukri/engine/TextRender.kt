@@ -27,6 +27,8 @@ class TextRender() : Render() {
 
     var textAlign = Paint.Align.CENTER
 
+    var alpha = 255
+
     val paint: Paint
         get() {
             val p = Paint()
@@ -34,6 +36,7 @@ class TextRender() : Render() {
             p.strokeWidth = strokeWidth
             p.textSize = textSize
             p.textAlign = textAlign
+            p.alpha = alpha
             return p
         }
 

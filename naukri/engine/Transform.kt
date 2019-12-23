@@ -14,11 +14,22 @@ class Transform : Component() {
     // 圖層索引，越大越上層
     var zIndex = 0
 
+    // 父物件
+    var parent = this
+        set(value) {
+            field.children.remove(this)
+            value.children.add(this)
+            field = value
+        }
+
+    // 子物件
+    val children = ArrayList<Transform>()
+
     // 真實坐標軸
     var position: Vector2
         get() {
             var res = localPosition
-            var current = gameObject
+            var current = this
             while (current != current.parent) {
                 res += current.parent.transform.localPosition
                 current = current.parent

@@ -4,35 +4,17 @@ import android.graphics.*
 import android.graphics.BitmapFactory
 
 
-// animator 目前不能翻轉
-class Animation() : Render() {
+// TODO animator 完整翻轉
+class Animation() : SpriteRender() {
 
     companion object {
         // 每張精靈預設停留幀數
         var DefaultFrameScale = 3
     }
 
-    class Bounds(private val target: Animation) {
-        val size
-            get() = Vector2(
-                target.size.x * target.transform.scale.x,
-                target.size.y * target.transform.scale.y
-            )
-
-        val left get() = target.renderPosition.x - (size.x / 2)
-
-        val top get() = target.renderPosition.y + (size.y / 2)
-
-        val right get() = target.renderPosition.x + (size.x / 2)
-
-        val bottom get() = target.renderPosition.y - (size.y / 2)
-
-        val rect get() = RectF(left, top, right, bottom)
-    }
-
     /*
     * spriteSheet     : 精靈表 ID
-    * count           : 精靈數量
+    * touchCount      : 精靈數量
     * size            : 精靈大小
     * spriteForFrames : 每幀位置
      */
@@ -64,34 +46,15 @@ class Animation() : Render() {
         }
     }
 
-    // 大小
-    var size = Vector2Int(0, 0)
-
-    private var sheetSize = Vector2Int(0, 0)
-
-    val left get() = renderPosition.x - (size.x shr 1)
-
-    val top get() = renderPosition.y + (size.y shr 1)
-
-    val right get() = renderPosition.x + (size.x shr 1)
-
-    val bottom get() = renderPosition.y - (size.y shr 1)
-
-    val rect get() = RectF(left, top, right, bottom)
-
-    val bounds get() = Bounds(this)
+    private var sheetSize = Vector2Int()
 
     // 精靈表 ID
-    private var sprite = 0
+    override var sprite = 0
         set(value) {
             field = value
             image = BitmapFactory.decodeResource(resources, sprite, SpriteRender.options)
             sheetSize = Vector2Int(image.width, image.height)
         }
-
-    // 精靈表
-    @Transient
-    lateinit var image: Bitmap
 
     // 每幀對應的精靈
     private lateinit var spriteForFrames: IntArray
@@ -109,6 +72,8 @@ class Animation() : Render() {
     private lateinit var spritesPosition: Array<Vector2Int>
 
     private var onEnd: (GameObject) -> Unit = {}
+
+    var playing = true
 
     // 渲染器坐標軸 (y軸相反)
     private val renderRectF
@@ -147,8 +112,10 @@ class Animation() : Render() {
 
     override fun render() {
         canvas?.drawBitmap(
-            image, currentSpriteRect, renderRectF, null
+            image.flip(flipX, flipY), currentSpriteRect, renderRectF, null
         )
-        nextFrame()
+        if (playing) {
+            nextFrame()
+        }
     }
 }

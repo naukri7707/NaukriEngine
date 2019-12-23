@@ -71,15 +71,14 @@ class GameObject(vararg components: Component) : Object() {
     val components = ArrayList<Component>()
 
     // 父物件
-    var parent = this
+    var parent
+        get() = transform.parent
         set(value) {
-            field.children.remove(this)
-            value.children.add(this)
-            field = value
+            transform.parent = value
         }
 
     // 子物件
-    val children = ArrayList<GameObject>()
+    val children get() = transform.children
 
     var name = ""
 
@@ -91,6 +90,7 @@ class GameObject(vararg components: Component) : Object() {
     internal var isInstantiate = false
         set(value) {
             if (value != field) {
+                field = value
                 if (value) {
                     mInstantiateCollection.add(this)
                     components.forEach {
@@ -102,7 +102,6 @@ class GameObject(vararg components: Component) : Object() {
                     }
                     mInstantiateCollection.remove(this)
                 }
-                field = value
             }
         }
 
@@ -110,6 +109,7 @@ class GameObject(vararg components: Component) : Object() {
     var enable = true
         set(value) {
             if (value != field && isInstantiate) {
+                field = value
                 if (value) {
                     components.forEach {
                         if (it.enable) {
@@ -123,8 +123,9 @@ class GameObject(vararg components: Component) : Object() {
                         }
                     }
                 }
+            } else {
+                field = value
             }
-            field = value
         }
 
     init {

@@ -22,6 +22,7 @@ abstract class Component : Object() {
     internal var isInstantiate = false
         internal set(value) {
             if (value != field) {
+                field = value
                 if (value) {
                     iAwake()
                     if(enable) {
@@ -30,7 +31,6 @@ abstract class Component : Object() {
                 } else {
                     iOnDestroyCollection.add { iOnDestroy() }
                 }
-                field = value
             }
         }
 
@@ -39,13 +39,13 @@ abstract class Component : Object() {
         set(value) {
             // 嘗試改變狀態
             if (value != field && isInstantiate) {
+                field = value
                 if (value && gameObject.enable) {
                     iOnEnableCollection.add { iOnEnable() }
                     iStartCollection.add { iStart() }
                 } else if (!value) {
                     iOnDisableCollection.add { iOnDisable() }
                 }
-                field = value
             }
         }
 

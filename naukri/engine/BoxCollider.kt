@@ -1,5 +1,6 @@
 package naukri.engine
 
+import android.graphics.Paint
 import android.graphics.RectF
 import kotlin.math.*
 
