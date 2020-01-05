@@ -4,10 +4,10 @@ class GameObject(vararg components: Component) : Object() {
 
     companion object {
         // 實例化物件搜集器
-        private var mInstantiateCollection = ArrayList<GameObject>(1024)
+        var mInstantiateCollection = ArrayList<GameObject>(1024)
 
         // 根物件，一切物件的祖物件，新增物件的預設父物件
-        private val root = GameObject { it.name = "Root" }
+        internal val root = GameObject { it.name = "Root" }
 
         // 用名子尋找
         fun find(name: String): GameObject? {
@@ -28,6 +28,18 @@ class GameObject(vararg components: Component) : Object() {
                 }
             }
             return res.toTypedArray()
+        }
+
+
+        // 用標籤尋找
+        inline fun <reified T : Component> findObjectOfType(): T? {
+            mInstantiateCollection.forEach {
+                val a = it.getComponent<T>()
+                if (a != null) {
+                    return a
+                }
+            }
+            return null
         }
 
         // 實例化物件, 如果是實例化預製物件的話應該使用這個
@@ -156,6 +168,10 @@ class GameObject(vararg components: Component) : Object() {
         return component
     }
 
+    inline fun <reified T : Component> addComponent(): T {
+        return addComponent(T::class.java.newInstance())
+    }
+
     // Read , Update
     inline fun <reified T : Component> getComponent(): T? {
         components.forEach {
@@ -174,5 +190,14 @@ class GameObject(vararg components: Component) : Object() {
             }
         }
         return res.toTypedArray()
+    }
+
+    fun newInstance(): GameObject {
+        val res = gameObject.deepCopy()
+        for (i in 0 until gameObject.components.count()) {
+            res.components[i].deepCopyFrom(this.components[i])
+        }
+        res.isInstantiate = true
+        return res
     }
 }

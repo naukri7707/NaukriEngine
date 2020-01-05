@@ -6,24 +6,25 @@ import android.graphics.RectF
 
 internal class Gizmos(
     var target: Collider
-) : Render() {
+) : Render(paint) {
 
     companion object {
         private const val color = Color.GREEN
         private const val strokeWidth = 2F
         private val style = Paint.Style.STROKE
 
-        private val paint: Paint
-            get() {
-                val p = Paint()
-                p.color = color
-                p.strokeWidth = strokeWidth
-                p.style = style
-                return p
-            }
+        val paint = Paint().set {
+            it.color = Color.GREEN
+            it.strokeWidth = strokeWidth
+            it.style = style
+        }
     }
 
     var drawFunction = {}
+
+    constructor(target: Collider, awake: (Gizmos) -> Unit) : this(target) {
+        lateConstructor = { awake(this) }
+    }
 
     override val renderPosition: Vector2
         get() = target.colliderPosition.worldToRenderPosition()

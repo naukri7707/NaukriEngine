@@ -1,10 +1,9 @@
 package naukri.engine
 
-import android.graphics.Paint
 import android.graphics.RectF
 import kotlin.math.*
 
-class BoxCollider : Collider() {
+class BoxCollider() : Collider() {
 
     class Bounds(private val target: BoxCollider) {
         val size
@@ -25,6 +24,10 @@ class BoxCollider : Collider() {
     }
 
     var size = Vector2(0F, 0F)
+
+    constructor(awake: (BoxCollider) -> Unit) : this() {
+        lateConstructor = { awake(this) }
+    }
 
     val left get() = colliderPosition.x - (size.x / 2)
 

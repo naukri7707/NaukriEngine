@@ -4,7 +4,15 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 
-class BoxRender() : Render() {
+class BoxRender() : Render(defaultPaint) {
+
+    companion object {
+        val defaultPaint = Paint().set {
+            it.color = Color.WHITE
+            it.strokeWidth = 2F
+            it.style = Paint.Style.STROKE
+        }
+    }
 
     class Bounds(private val target: BoxRender) {
         val size
@@ -24,26 +32,20 @@ class BoxRender() : Render() {
         val rect get() = RectF(left, top, right, bottom)
     }
 
+    var size = Vector2(0F, 0F)
+
     constructor(width: Float, height: Float) : this() {
         size.x = width
         size.y = height
     }
 
-    constructor(width: Float, height: Float, paint: Paint) : this(width, height) {
-        color = paint.color
-        strokeWidth = paint.strokeWidth
-        style = paint.style
+    constructor(awake: (BoxRender) -> Unit) : this() {
+        this.lateConstructor = { awake(this) }
     }
 
-    var size = Vector2(0F, 0F)
-
-    var color = Color.WHITE
-
-    var strokeWidth = 2F
-
-    var style = Paint.Style.STROKE
-
-    var alpha = 255
+    constructor(width: Float, height: Float, awake: (BoxRender) -> Unit) : this(width, height) {
+        this.lateConstructor = { awake(this) }
+    }
 
     val left get() = renderPosition.x - (size.x / 2)
 
@@ -65,20 +67,6 @@ class BoxRender() : Render() {
             bounds.right,
             bounds.top
         )
-
-    val width get() = right - left
-
-    val height get() = bottom - top
-
-    private val paint: Paint
-        get() {
-            val p = Paint()
-            p.color = color
-            p.strokeWidth = strokeWidth
-            p.style = style
-            p.alpha = alpha
-            return p
-        }
 
     override fun render() {
         canvas?.drawRect(

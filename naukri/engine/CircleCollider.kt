@@ -2,7 +2,7 @@ package naukri.engine
 
 import kotlin.math.abs
 
-class CircleCollider : Collider() {
+class CircleCollider() : Collider() {
 
     class Bounds(target: CircleCollider) {
         // 縮放率只受 x 軸控制、亦會因x軸改變而同時改變y來保持圓型而非變形成橢圓
@@ -12,6 +12,10 @@ class CircleCollider : Collider() {
     var radius = 0F
 
     val bounds get() = Bounds(this)
+
+    constructor(awake: (CircleCollider) -> Unit) : this() {
+        lateConstructor = { awake(this) }
+    }
 
     override fun <T : Collider> isCollision(other: T): Boolean {
         when (other) {

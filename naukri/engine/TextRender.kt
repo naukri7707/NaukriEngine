@@ -4,41 +4,31 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 
-class TextRender() : Render() {
+class TextRender() : Render(defaultPaint) {
+
+    companion object {
+        val defaultPaint = Paint().set {
+            it.color = Color.WHITE
+            it.strokeWidth = 20F
+            it.textSize = 90F
+            it.textAlign = Paint.Align.CENTER
+        }
+    }
+
+    var text: String = ""
 
     constructor(text: String) : this() {
         this.text = text
     }
 
-    constructor(text: String, paint: Paint) : this(text) {
-        color = paint.color
-        strokeWidth = paint.strokeWidth
-        textSize = paint.textSize
-        textAlign = paint.textAlign
+    constructor(awake: (TextRender) -> Unit) : this() {
+        lateConstructor = { awake(this) }
     }
 
-    var text: String = ""
+    constructor(text: String, awake: (TextRender) -> Unit) : this(text) {
+        lateConstructor = { awake(this) }
+    }
 
-    var color = Color.WHITE
-
-    var strokeWidth = 20F
-
-    var textSize = 90F
-
-    var textAlign = Paint.Align.CENTER
-
-    var alpha = 255
-
-    val paint: Paint
-        get() {
-            val p = Paint()
-            p.color = color
-            p.strokeWidth = strokeWidth
-            p.textSize = textSize
-            p.textAlign = textAlign
-            p.alpha = alpha
-            return p
-        }
 
     override fun render() {
         val rect = Rect()

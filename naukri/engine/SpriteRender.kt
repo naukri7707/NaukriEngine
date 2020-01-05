@@ -1,24 +1,20 @@
 package naukri.engine
 
 import android.graphics.*
-import android.media.Image
-import kotlin.math.abs
 
 
-open class SpriteRender() : Render() {
+open class SpriteRender() : Render(defaultPaint) {
 
     companion object {
+
+        val defaultPaint = Paint()
+
         // 讓 BitmapFactory 不要重新採樣
         val options: BitmapFactory.Options by lazy {
             val op = BitmapFactory.Options()
             op.inScaled = false
             return@lazy op
         }
-    }
-
-
-    constructor(sprite: Int) : this() {
-        this.sprite = sprite
     }
 
     class Bounds(private val target: SpriteRender) {
@@ -42,7 +38,29 @@ open class SpriteRender() : Render() {
     // 大小
     var size = Vector2Int(0, 0)
 
-    var alpha = 255
+    // 精靈 (圖片 ID)
+    open var sprite = 0
+        set(value) {
+            field = value
+            image = BitmapFactory.decodeResource(resources, sprite, options)
+            size = Vector2Int(image.width, image.height)
+        }
+
+    // 圖片
+    @Transient
+    lateinit var image: Bitmap
+
+    constructor(sprite: Int) : this() {
+        this.sprite = sprite
+    }
+
+    constructor(awake: (SpriteRender) -> Unit) : this() {
+        lateConstructor = { awake(this) }
+    }
+
+    constructor(sprite: Int, awake: (SpriteRender) -> Unit) : this(sprite) {
+        lateConstructor = { awake(this) }
+    }
 
     val left get() = renderPosition.x - (size.x shr 1)
 
@@ -56,18 +74,6 @@ open class SpriteRender() : Render() {
 
     val bounds get() = Bounds(this)
 
-    // 精靈 (圖片 ID)
-    open var sprite = 0
-        set(value) {
-            field = value
-            image = BitmapFactory.decodeResource(resources, sprite, options)
-            size = Vector2Int(image.width, image.height)
-        }
-
-    // 圖片
-    @Transient
-    lateinit var image: Bitmap
-
     // 渲染器坐標軸 (y軸相反)
     private val renderRectF
         get() = RectF(
@@ -76,13 +82,6 @@ open class SpriteRender() : Render() {
             bounds.right,
             bounds.top
         )
-
-    private val paint: Paint
-        get() {
-            val p = Paint()
-            p.alpha = alpha
-            return p
-        }
 
     override fun iAwake() {
         super.iAwake()

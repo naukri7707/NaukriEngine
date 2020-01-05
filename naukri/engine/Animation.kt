@@ -3,13 +3,16 @@ package naukri.engine
 import android.graphics.*
 import android.graphics.BitmapFactory
 
-
 // TODO animator 完整翻轉
 class Animation() : SpriteRender() {
 
     companion object {
         // 每張精靈預設停留幀數
         var DefaultFrameScale = 3
+    }
+
+    constructor(awake: (Animation) -> Unit) : this() {
+        this.lateConstructor = { awake(this) }
     }
 
     /*
@@ -46,6 +49,16 @@ class Animation() : SpriteRender() {
         }
     }
 
+    constructor(
+        spriteSheet: Int,
+        count: Int,
+        size: Vector2Int,
+        vararg frames: Int,
+        lateConstructor: (Animation) -> Unit
+    ) : this(spriteSheet, count, size, *frames) {
+        this.lateConstructor = { lateConstructor(this) }
+    }
+
     private var sheetSize = Vector2Int()
 
     // 精靈表 ID
@@ -65,8 +78,6 @@ class Animation() : SpriteRender() {
     // 幀數倍率
     var frameScale = DefaultFrameScale
 
-    // 縮放後的幀數
-    private val scaleFrame get() = frame / frameScale
 
     // 各精靈座標軸 (左上角)
     private lateinit var spritesPosition: Array<Vector2Int>
@@ -74,6 +85,9 @@ class Animation() : SpriteRender() {
     private var onEnd: (GameObject) -> Unit = {}
 
     var playing = true
+
+    // 縮放後的幀數
+    private val scaleFrame get() = frame / frameScale
 
     // 渲染器坐標軸 (y軸相反)
     private val renderRectF

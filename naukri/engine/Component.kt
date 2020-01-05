@@ -1,8 +1,8 @@
 package naukri.engine
 
-abstract class Component : Object() {
+abstract class Component() : Object() {
 
-    companion object{
+    companion object {
         // 啟發式狀態搜集器
         internal val iOnEnableCollection = ArrayList<() -> Unit>(256)
         internal val iStartCollection = ArrayList<() -> Unit>(512)
@@ -10,13 +10,7 @@ abstract class Component : Object() {
         internal val iOnDestroyCollection = ArrayList<() -> Unit>(256)
     }
 
-    lateinit var gameObject: GameObject
-
-    val transform get() = gameObject.transform
-
-    val name get() = gameObject.name
-
-    val tag get() = gameObject.tag
+    var gameObject = GameObject.root
 
     // 是否實例化 (防止 gameObject 為 null)
     internal var isInstantiate = false
@@ -25,7 +19,7 @@ abstract class Component : Object() {
                 field = value
                 if (value) {
                     iAwake()
-                    if(enable) {
+                    if (enable) {
                         iStartCollection.add { iStart() }
                     }
                 } else {
@@ -49,8 +43,18 @@ abstract class Component : Object() {
             }
         }
 
+    val transform get() = gameObject.transform
+
+    val name get() = gameObject.name
+
+    val tag get() = gameObject.tag
+
+    var lateConstructor = {}
+
     // 實例化後
-    internal open fun iAwake() {}
+    internal open fun iAwake() {
+        lateConstructor()
+    }
 
     // 啟動時
     internal open fun iOnEnable() {}
@@ -107,4 +111,6 @@ abstract class Component : Object() {
         }
         return res.toTypedArray()
     }
+
+    open fun <T : Component> deepCopyFrom(TValue: T) {}
 }

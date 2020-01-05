@@ -1,6 +1,8 @@
 package naukri.engine
 
-class Transform : Component() {
+import kotlin.concurrent.timer
+
+class Transform() : Component() {
     // 相對於父物件的坐標軸
     var localPosition = Vector2(0F, 0F)
 
@@ -25,6 +27,10 @@ class Transform : Component() {
     // 子物件
     val children = ArrayList<Transform>()
 
+    constructor(awake: (Transform) -> Unit) : this() {
+        lateConstructor = { awake(this) }
+    }
+
     // 真實坐標軸
     var position: Vector2
         get() {
@@ -46,5 +52,51 @@ class Transform : Component() {
 
     fun translate(translate: Vector2) {
         localPosition += translate
+    }
+
+    /**
+     * 限制增量
+     * @param x       x軸增量
+     * @param y       y軸增量
+     * @param limiter 限制器
+     */
+    fun translate(x: Float, y: Float, limiter: Float) {
+        localPosition.x += x.coerceIn(-limiter, limiter)
+        localPosition.y += y.coerceIn(-limiter, limiter)
+    }
+
+    /**
+     * 限制增量
+     * @param translate 目標增量
+     * @param limiter   限制器
+     */
+    fun translate(translate: Vector2, limiter: Float) {
+        localPosition.x += translate.x.coerceIn(-limiter, limiter)
+        localPosition.y += translate.y.coerceIn(-limiter, limiter)
+    }
+
+    /**
+     * 移動到目標
+     * @param target 目標座標
+     * @param speed  速度
+     */
+    fun moveTo(target: Vector2, speed: Float) {
+        val c = Vector2.distance(position, target)
+        if (c == 0F) {
+            return
+        }
+        val a = target.x - position.x
+        val b = target.y - position.y
+        val newPos = Vector2(
+            position.x + speed * a / c,
+            position.y + speed * b / c
+        )
+        if (Float.distance(position.x, target.x) < Float.distance(position.x, newPos.x)) {
+            newPos.x = target.x
+        }
+        if (Float.distance(position.y, target.y) < Float.distance(position.y, newPos.y)) {
+            newPos.y = target.y
+        }
+        position = newPos
     }
 }
