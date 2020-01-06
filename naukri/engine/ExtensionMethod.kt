@@ -32,6 +32,10 @@ fun Random.range(min: Float, max: Float): Float {
     return min + nextFloat() * (max - min)
 }
 
+fun <T> Random.value(vararg TValues: T): T {
+    return TValues.random()
+}
+
 // 將 float 限制在區域內
 fun Float.Companion.clamp(value: Float, min: Float, max: Float): Float {
     return when {

@@ -35,6 +35,14 @@ abstract class Object : Serializable {
             return res.toTypedArray()
         }
 
+        fun instantiate(gameObject: GameObject, count: Int): Array<GameObject> {
+            val res = mutableListOf<GameObject>()
+            for (i in 0 until count) {
+                res.add(instantiate(gameObject))
+            }
+            return res.toTypedArray()
+        }
+
         fun instantiateNonCopy(gameObject: GameObject): GameObject {
             gameObject.isInstantiate = true
             return gameObject

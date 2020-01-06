@@ -69,11 +69,15 @@ class GameThread(
                     // 繪製
                     gameView.draw(Render.canvas)
                     // 物件渲染更新
-                    Render.collection.sortedWith(
-                        compareBy(
-                            { it.gameObject.layer },
-                            { it.transform.zIndex })
-                    ).forEach {
+                    if (Render.reSort) {
+                        Render.collection.sortWith(
+                            compareBy(
+                                { it.gameObject.layer },
+                                { it.transform.zIndex })
+                        )
+                        Render.reSort = false
+                    }
+                    Render.collection.forEach {
                         it.render()
                     }
                     // 關閉

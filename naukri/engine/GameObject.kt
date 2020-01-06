@@ -97,6 +97,12 @@ class GameObject(vararg components: Component) : Object() {
     var tag = ""
 
     var layer = Layer.Default
+        set(value) {
+            if (value != field) {
+                Render.reSort = true
+                field = value
+            }
+        }
 
     // 是否實例化
     internal var isInstantiate = false

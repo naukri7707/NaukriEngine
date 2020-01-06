@@ -8,6 +8,9 @@ abstract class Render(
 ) : Component() {
 
     companion object {
+
+        var reSort = false
+
         val defaultPaint = Paint()
 
         internal var canvas: Canvas? = null
@@ -41,11 +44,13 @@ abstract class Render(
     override fun iAwake() {
         super.iAwake()
         collection.add(this)
+        reSort = true
     }
 
     override fun iOnEnable() {
         super.iOnEnable()
         collection.add(this)
+        reSort = false
     }
 
     override fun iOnDisable() {

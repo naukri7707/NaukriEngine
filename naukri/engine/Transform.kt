@@ -15,6 +15,12 @@ class Transform() : Component() {
         }
     // 圖層索引，越大越上層
     var zIndex = 0
+        set(value) {
+            if (value != field) {
+                Render.reSort = true
+                field = value
+            }
+        }
 
     // 父物件
     var parent = this
